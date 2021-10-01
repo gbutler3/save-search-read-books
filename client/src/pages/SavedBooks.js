@@ -18,6 +18,13 @@ const SavedBooks = () => {
   // Use optional chaining to check if data exists and if it has a data property. If not, return an empty array to use.
   const userData = data?.me || []; 
 
+  if(!userData?.me) {
+    return (
+      <h4>
+        No Books Saved!
+      </h4>
+    );
+  }
 
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
