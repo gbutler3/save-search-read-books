@@ -7,7 +7,7 @@ const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('user');
+        return User.findOne({ _id: context.user._id }).populate('books');
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -35,7 +35,7 @@ const resolvers = {
     },
     saveBook: async (parent, { newbook }, context) => {
       if (context.user) {
-        const updateUser = await User.findByIdAndUpdate(
+        return User.findByIdAndUpdate(
           {_id: context.user._id},
           {$addToSet: {savedbook: newbook}}, //using add b/c it is used in examples
           //addtoSet vs pull; 
