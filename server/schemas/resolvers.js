@@ -34,11 +34,11 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, { book }, context) => {
+    saveBook: async (parent, { bookId }, context) => {
       if (context.user) {
         const updateUser = await User.findByIdAndUpdate(
           {_id: context.user._id},
-          {$addToSet: {savedBooks: book}}, //using add b/c it is used in examples
+          {$addToSet: {savedBooks: input}}, //using add b/c it is used in examples
           //addtoSet vs pull; 
           //$addToSet doesn't add the item to the given field if it already contains it
           //$push will add the given object to field whether it exists or not

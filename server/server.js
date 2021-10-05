@@ -5,13 +5,15 @@ const db = require('./config/connection');
 //import ApolloServer
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
+const {authMiddleware} = require('./utils/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 //instantiate ApolloServer and then passing typeDefs and Rsolvers
 const server = new ApolloServer({
   typeDefs, 
-  resolvers
+  resolvers,
+  context: authMiddleware
 });
 
 //applyMiddleware is coming off of Apollo Server, this is how they get joined
