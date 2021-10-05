@@ -9,12 +9,12 @@ import Auth from '../utils/auth';
 
 const SignupForm = () => {
   // set initial form state
-  const [userFormData, setFormState] = useState({ 
+  const [userFormData, setUserFormData] = useState({ 
     username: '',
     email: '',
     password: '',
     });
-  const [addUser, {error, data}] = useMutation(ADD_USER);
+  const [addUser] = useMutation(ADD_USER);
 
   // set state for form validation
   const [validated] = useState(false);
@@ -23,7 +23,7 @@ const SignupForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormState({
+    setUserFormData({
       ...userFormData,
       [name]: value,
      });
@@ -56,7 +56,7 @@ const SignupForm = () => {
       setShowAlert(true);
     }
 
-    setFormState({
+    setUserFormData({
       username: '',
       email: '',
       password: '',

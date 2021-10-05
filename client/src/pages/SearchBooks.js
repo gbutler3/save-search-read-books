@@ -5,6 +5,7 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 import { useMutation } from '@apollo/client';
 // Import the GraphQL mutation
 import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 
 import Auth from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API';
@@ -19,7 +20,7 @@ const SearchBooks = () => {
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
   // Invoke `useMutation()` hook to return a Promise-based function and data about the SAVE_BOOK mutation
-  const [savebook, { error }] = useMutation(SAVE_BOOK);
+  const [savebook] = useMutation(SAVE_BOOK);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -69,8 +70,13 @@ const SearchBooks = () => {
     }
 
     try {
-      const { data } = await savebook({
-        variables: {savebook, token}
+      await savebook({
+        update: cache => {
+          const {me} = cache.readQuery({ query: GET_ME });
+          // console.log(me)
+          // console.log(me.savedBooks)
+          cache.writeQuery({ query: GET_ME , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
+        }
       });
       // if (!response.ok) {
       //   throw new Error('something went wrong!');

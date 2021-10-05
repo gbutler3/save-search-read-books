@@ -7,7 +7,8 @@ const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('books');
+        const userData= await User.findOne({ _id: context.user._id }).select('-__v -password');
+        return userData;
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -33,11 +34,11 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, { newbook }, context) => {
+    saveBook: async (parent, { book }, context) => {
       if (context.user) {
-        return User.findByIdAndUpdate(
+        const updateUser = await User.findByIdAndUpdate(
           {_id: context.user._id},
-          {$addToSet: {savedbook: newbook}}, //using add b/c it is used in examples
+          {$addToSet: {savedBooks: book}}, //using add b/c it is used in examples
           //addtoSet vs pull; 
           //$addToSet doesn't add the item to the given field if it already contains it
           //$push will add the given object to field whether it exists or not
@@ -51,7 +52,7 @@ const resolvers = {
       if (context.user) {
         const updateUser = await User.findByIdAndUpdate(
           {_id: context.user._id},
-          {$pull: {savedbooks: bookId}},
+          {$pull: {savedBooks: {bookId: bookId }}},
           {new: true}
           );
         return updateUser;

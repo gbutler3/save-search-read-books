@@ -14,7 +14,7 @@ const SavedBooks = () => {
   // const [userData, setUserData] = useState({});
   // Execute the query on component load
   const {loading, data} = useQuery(GET_ME)
-  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
+  const [removeBook] = useMutation(REMOVE_BOOK);
   // Use optional chaining to check if data exists and if it has a data property. If not, return an empty array to use.
   const userData = data?.me || []; 
 
@@ -64,8 +64,16 @@ const SavedBooks = () => {
     }
 
     try {
-      const {data} = await removeBook({
+      await removeBook({
         variables: {bookId},
+        update: cache => {
+          const data = cache.readQuery({ query: GET_ME });
+          const userDataCache = data.me;
+          const savedBooksCache = userDataCache.savedBooks;
+          const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
+          data.me.savedBooks = updatedBookCache;
+          cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
+        }
       });
 
       removeBookId(bookId);

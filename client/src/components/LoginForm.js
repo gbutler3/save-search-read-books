@@ -12,19 +12,19 @@ import { LOGIN_USER } from '../utils/mutations';
 // import { loginUser } from '../utils/API';
 import Auth from '../utils/auth';
 
-const LoginForm = (props) => {
-  const [userFormData, setFormState] = useState({ 
+const LoginForm = () => {
+  const [userFormData, setUserFormData] = useState({ 
     email: '',
     password: '',
     });
-  const [loginUser, {error, data}] = useMutation(LOGIN_USER);
+  const [loginUser] = useMutation(LOGIN_USER);
 
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormState({
+    setUserFormData({
       ...userFormData,
       [name]: value,
     });
@@ -58,7 +58,7 @@ const LoginForm = (props) => {
     }
 
     // clear form values
-    setFormState({
+    setUserFormData({
       username: '',
       email: '',
       password: '',
